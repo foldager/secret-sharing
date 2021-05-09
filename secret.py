@@ -2,6 +2,18 @@
 import secrets
 from base64 import b64encode, b64decode
 import argparse
+from tabulate import tabulate
+from rst2pdf.createpdf import RstToPdf
+
+TEMPLATE = """\
+{table1}
+
+.. raw:: pdf
+
+    PageBreak
+
+{table2}
+"""
 
 
 def split_secret_bytes(secret):
@@ -59,7 +71,24 @@ def split_command(secret, **kwargs):
 
 
 def splitn_command(secret, n, **kwargs):
-    pass
+    share1 = []
+    share2 = []
+
+    for i in range(1, 8):
+        share_a, share_b = split_secret(secret)
+        share1.append([f'#{i}', f'``{share_a}``'])
+        share2.append([f'#{i}', f'``{share_b}``'])
+
+    table1 = tabulate(
+        share1, headers=['Share ID', 'Share value'], tablefmt='rst',
+    )
+    table2 = tabulate(
+        share2, headers=['Share ID', 'Share value'], tablefmt='rst'
+    )
+    RstToPdf().createPdf(
+        text=TEMPLATE.format(table1=table1, table2=table2),
+        output='shares.pdf'
+    )
 
 
 def bytes2storestring(b):

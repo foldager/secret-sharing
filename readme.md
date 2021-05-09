@@ -24,6 +24,7 @@ Create pdfs for printing. Any two sheets of paper are and prindocuments
 - [ ] Error handling
   - [ ] Store string invalid -- cannot decode
   - [ ] combining: Secret is not valid utf8
+  - [ ] Warn/error if the two shares are identical
 
 
 
