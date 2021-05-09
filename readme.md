@@ -20,6 +20,10 @@ Create pdfs for printing. Any two sheets of paper are and prindocuments
   - [ ] ...
 - [x] Unit tests
 - [ ] Continous testing (github actions)
+- [ ] Checksum in storage string
+- [ ] Error handling
+  - [ ] Store string invalid -- cannot decode
+  - [ ] combining: Secret is not valid utf8
 
 
 
