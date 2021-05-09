@@ -1,7 +1,7 @@
 
 # Secret sharing
 
-Split recovery keys and other secrets. Prin
+Split recovery keys and other secrets.
 
 Create pdfs for printing. Any two sheets of paper are and prindocuments 
 
@@ -30,6 +30,7 @@ Create pdfs for printing. Any two sheets of paper are and prindocuments
 ## Encoding
 
 ```
+
 Input/output from app:
     Secret: str()
     splits: str(b64(checksum()))
