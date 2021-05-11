@@ -4,15 +4,15 @@ from base64 import b64encode, b64decode
 import argparse
 from tabulate import tabulate
 from rst2pdf.createpdf import RstToPdf
+from random import shuffle
 
-TEMPLATE = """\
-{table1}
+
+RST_PAGE_JOINER = """
 
 .. raw:: pdf
 
     PageBreak
 
-{table2}
 """
 
 
@@ -70,25 +70,56 @@ def split_command(secret, **kwargs):
     print(f"Secret shares: {share_a} {share_b}")
 
 
-def splitn_command(secret, n, **kwargs):
-    share1 = []
-    share2 = []
+def splitn_command(secret, n, out_file, **kwargs):
+    """
+    N shares so that any two shares can be combined to obtain the secret.
+    Each share will contain n-1 share values, each matching a different share.
+    The secret can be obtained by combining two share values with the same
+    share ID.
 
-    for i in range(1, 8):
-        share_a, share_b = split_secret(secret)
-        share1.append([f'#{i}', f'``{share_a}``'])
-        share2.append([f'#{i}', f'``{share_b}``'])
+    The share tables and instructions are saved to pdf.
+    """
 
-    table1 = tabulate(
-        share1, headers=['Share ID', 'Share value'], tablefmt='rst',
-    )
-    table2 = tabulate(
-        share2, headers=['Share ID', 'Share value'], tablefmt='rst'
-    )
+    ids = list(range(100, 999))
+    n_share_values = (n * n) / 2 - n
+    if len(ids) < n_share_values:
+        raise ValueError(
+            f"Share ID space too small for n={n}. Choose smaller n."
+        )
+    shuffle(ids)
+
+    shares = [[] for _ in range(n)]
+    for i in range(n):
+        for j in range(i + 1, n):
+            share_a, share_b = split_secret(secret)
+            share_id = ids.pop()
+            shares[i].append([share_id, f'``{share_a}``'])
+            shares[j].append([share_id, f'``{share_b}``'])
+
+    # Sort share values by ID and format ID.
+    for share in shares:
+        share.sort(key=lambda x: x[0])
+        for record in share:
+            record[0] = f'#{record[0]}'
+
+    pages = [create_page(share) for share in shares]
+    rst_doc = join_pages(pages)
+
     RstToPdf().createPdf(
-        text=TEMPLATE.format(table1=table1, table2=table2),
-        output='shares.pdf'
+        text=rst_doc,
+        output=out_file
     )
+
+
+def create_page(records):
+    table = tabulate(
+        records, headers=['Share ID', 'Share value'], tablefmt='rst',
+    )
+    return table
+
+
+def join_pages(pages):
+    return RST_PAGE_JOINER.join(pages)
 
 
 def bytes2storestring(b):
@@ -134,9 +165,12 @@ def get_args():
     p_split.set_defaults(sub_cmd=split_command)
 
     # Create pdf
-    p_splitn = p_sub.add_parser('splitn')
+    p_splitn = p_sub.add_parser('split-to-pdf')
     p_splitn.add_argument('secret')
-    p_splitn.add_argument('n')
+    p_splitn.add_argument('n', type=int)
+    p_splitn.add_argument(
+        '--out-file', '-o', default='secret_shares.pdf'
+    )
     p_splitn.set_defaults(sub_cmd=splitn_command)
 
     return p.parse_args()
