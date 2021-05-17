@@ -7,13 +7,13 @@ Create pdfs for printing. Any two sheets of paper are and prindocuments
 
 - [x] Secret splitting script
 - [x] Secret joining script
-- [ ] Script that takes secret and creates multipage PDF. Any two pages can be used to re-create the secret.
+- [x] Script that takes secret and creates multipage PDF. Any two pages can be used to re-create the secret.
 - [ ] Add metadata to document
   - [ ] Secret name
   - [ ] Description
   - [ ] Owner
   - [ ] Full list of confidants (Optional)
-  - [ ] Selfdocumenting.
+  - [ ] Selfdocumenting. Must contain enough detail that the secret can be recovered without access to script.
     - [ ] High level description of algorithm
     - [ ] Hand derived example(s)
 - [ ] Repo documentation
@@ -55,3 +55,9 @@ encode: string -> bytes
 decode: bytes -> string
 ```
 
+## Examples
+
+```console
+% ./secret.py combine txhEAu8Dm9OdZ5iKzPukpDy4vIP1NqMOuA== +3crac9h/rv0CfyquJPBhE/Q2efVxjyqFQ==
+Look behind the shed 🤭
+```

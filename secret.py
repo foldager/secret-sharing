@@ -2,18 +2,9 @@
 import secrets
 from base64 import b64encode, b64decode
 import argparse
-from tabulate import tabulate
 from rst2pdf.createpdf import RstToPdf
 from random import shuffle
-
-
-RST_PAGE_JOINER = """
-
-.. raw:: pdf
-
-    PageBreak
-
-"""
+from document import create_page
 
 
 def split_secret_bytes(secret):
@@ -62,7 +53,7 @@ def xor(a, b):
 
 def join_command(share_a, share_b, **kwargs):
     secret = restore_secret(share_a, share_b)
-    print(f'Combining {share_a} and {share_b} to get {secret}')
+    print(secret)
 
 
 def split_command(secret, **kwargs):
@@ -70,7 +61,7 @@ def split_command(secret, **kwargs):
     print(f"Secret shares: {share_a} {share_b}")
 
 
-def splitn_command(secret, n, out_file, **kwargs):
+def splitn_command(secret, n, out_file, secret_name, **kwargs):
     """
     N shares so that any two shares can be combined to obtain the secret.
     Each share will contain n-1 share values, each matching a different share.
@@ -93,17 +84,21 @@ def splitn_command(secret, n, out_file, **kwargs):
         for j in range(i + 1, n):
             share_a, share_b = split_secret(secret)
             share_id = ids.pop()
-            shares[i].append([share_id, f'``{share_a}``'])
-            shares[j].append([share_id, f'``{share_b}``'])
+            shares[i].append([j+1, f'#{share_id}', f'``{share_a}``'])
+            shares[j].append([i+1, f'#{share_id}', f'``{share_b}``'])
 
-    # Sort share values by ID and format ID.
-    for share in shares:
-        share.sort(key=lambda x: x[0])
-        for record in share:
-            record[0] = f'#{record[0]}'
-
-    pages = [create_page(share) for share in shares]
+    pages = [
+        create_page(
+            secret_name=secret_name,
+            sheet_id=i,
+            n_sheet=n,
+            records=share
+        )
+        for i, share in enumerate(shares, 1)]
     rst_doc = join_pages(pages)
+
+    # with open('foo.rst', 'w') as fh:
+    #     fh.write(rst_doc)
 
     RstToPdf().createPdf(
         text=rst_doc,
@@ -111,15 +106,8 @@ def splitn_command(secret, n, out_file, **kwargs):
     )
 
 
-def create_page(records):
-    table = tabulate(
-        records, headers=['Share ID', 'Share value'], tablefmt='rst',
-    )
-    return table
-
-
 def join_pages(pages):
-    return RST_PAGE_JOINER.join(pages)
+    return '\n'.join(pages)
 
 
 def bytes2storestring(b):
@@ -166,10 +154,12 @@ def get_args():
 
     # Create pdf
     p_splitn = p_sub.add_parser('split-to-pdf')
-    p_splitn.add_argument('secret')
+    p_splitn.add_argument('secret_name')
     p_splitn.add_argument('n', type=int)
+    p_splitn.add_argument('secret')
     p_splitn.add_argument(
-        '--out-file', '-o', default='secret_shares.pdf'
+        '--out-file', '-o', default='secret_shares.pdf',
+        help='Pdf output file. Default: %(default)s'
     )
     p_splitn.set_defaults(sub_cmd=splitn_command)
 
