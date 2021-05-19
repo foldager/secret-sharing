@@ -5,6 +5,8 @@ Split recovery keys and other secrets.
 
 Create pdfs for printing. Any two sheets of paper are and prindocuments 
 
+
+## Task list
 - [x] Secret splitting script
 - [x] Secret joining script
 - [x] Script that takes secret and creates multipage PDF. Any two pages can be used to re-create the secret.
