@@ -21,7 +21,7 @@ Create pdfs for printing. Any two sheets of paper are and prindocuments
 - [ ] Repo documentation
   - [ ] ...
 - [x] Unit tests
-- [ ] Continous testing (github actions)
+- [x] Continous testing (github actions)
 - [ ] Checksum in storage string
 - [ ] Don't leak secret in shell history
 - [ ] Error handling
