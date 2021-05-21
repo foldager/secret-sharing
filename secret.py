@@ -5,6 +5,7 @@ import argparse
 from rst2pdf.createpdf import RstToPdf
 from random import shuffle
 from document import create_page
+from getpass import getpass
 
 
 def split_secret_bytes(secret):
@@ -57,6 +58,8 @@ def join_command(share_a, share_b, **kwargs):
 
 
 def split_command(secret, **kwargs):
+    if secret is None:
+        secret = getpass(prompt='Secret: ')
     share_a, share_b = split_secret(secret)
     print(f"Secret shares: {share_a} {share_b}")
 
@@ -70,6 +73,9 @@ def splitn_command(secret, n, out_file, secret_name, **kwargs):
 
     The share tables and instructions are saved to pdf.
     """
+
+    if secret is None:
+        secret = getpass(prompt='Secret: ')
 
     ids = list(range(100, 999))
     n_share_values = (n * n) / 2 - n
@@ -149,14 +155,14 @@ def get_args():
 
     # Split
     p_split = p_sub.add_parser('split')
-    p_split.add_argument('secret')
+    p_split.add_argument('secret', default=None, nargs='?')
     p_split.set_defaults(sub_cmd=split_command)
 
     # Create pdf
     p_splitn = p_sub.add_parser('split-to-pdf')
     p_splitn.add_argument('secret_name')
     p_splitn.add_argument('n', type=int)
-    p_splitn.add_argument('secret')
+    p_splitn.add_argument('secret', default=None, nargs='?')
     p_splitn.add_argument(
         '--out-file', '-o', default='secret_shares.pdf',
         help='Pdf output file. Default: %(default)s'
