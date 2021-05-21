@@ -6,6 +6,12 @@ from rst2pdf.createpdf import RstToPdf
 from random import shuffle
 from document import create_page
 from getpass import getpass
+from functools import reduce
+import operator
+
+
+class InvalidChecksum(Exception):
+    pass
 
 
 def split_secret_bytes(secret):
@@ -121,8 +127,8 @@ def bytes2storestring(b):
     Convert abitrary bytes to a printable string, the storage format
     for handling secret shares.
     """
-    # TODO add checksum byte(s)
-    return b64encode(b).decode('utf8')
+    control_byte = bytes([reduce(operator.xor, b)])
+    return b64encode(b + control_byte).decode('utf8')
 
 
 def storestring2bytes(string):
@@ -131,7 +137,14 @@ def storestring2bytes(string):
     format -- usually created by bytes2storestring(bytes)
     """
     # TODO handle errors
-    return b64decode(string.encode('utf8'))
+    all_bytes = b64decode(string.encode('utf8'))
+    b, control_byte = all_bytes[:-1], all_bytes[-1]
+
+    if not reduce(operator.xor, b) == control_byte:
+        raise InvalidChecksum(
+            f"Store string '{string}' is corrupt or not entered correctly."
+        )
+    return b
 
 
 def get_args():

@@ -4,7 +4,9 @@ from secret import (
     xor,
     storestring2bytes,
     bytes2storestring,
+    InvalidChecksum,
 )
+import pytest
 
 
 def test_join_bytes():
@@ -20,6 +22,24 @@ def test_split_and_restore():
 
 
 def test_encode_decode():
+    b = b'Hello world'
+    s = bytes2storestring(b)
+    assert b == storestring2bytes(s)
+
+
+def test_storestring2bytes_err():
     s = 'x82Km0R/s0DDIpM='
-    b = storestring2bytes(s)
+    with pytest.raises(InvalidChecksum):
+        storestring2bytes(s)
+
+
+def test_storestring2bytes():
+    b = b'Hello world'
+    s = 'SGVsbG8gd29ybGQA'
+    assert b == storestring2bytes(s)
+
+
+def test_bytes2storestring():
+    b = b'Hello world'
+    s = 'SGVsbG8gd29ybGQA'
     assert s == bytes2storestring(b)

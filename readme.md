@@ -17,13 +17,15 @@ Create pdfs for printing. Any two sheets of paper are and prindocuments
   - [ ] Full list of confidants (Optional)
   - [ ] Selfdocumenting. Must contain enough detail that the secret can be recovered without access to script.
     - [ ] High level description of algorithm
+      - [ ] bytes to b64 store string
+      - [ ] checksum byte
     - [ ] Hand derived example(s)
 - [ ] Repo documentation
   - [ ] ...
 - [x] Unit tests
 - [x] Continous testing (github actions)
-- [ ] Checksum in storage string
-- [ ] Don't leak secret in shell history
+- [x] Checksum in storage string
+- [x] Option to no leak secret in shell history
 - [ ] Error handling
   - [ ] Store string invalid -- cannot decode
   - [ ] combining: Secret is not valid utf8
