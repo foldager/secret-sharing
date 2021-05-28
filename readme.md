@@ -27,9 +27,9 @@ Create pdfs for printing. Any two sheets of paper are and prindocuments
 - [x] Checksum in storage string
 - [x] Option to no leak secret in shell history
 - [ ] Error handling
-  - [ ] Store string invalid -- cannot decode
-  - [ ] combining: Secret is not valid utf8
-  - [ ] Warn/error if the two shares are identical
+  - [x] Store string invalid -- cannot decode
+  - [x] combining: Secret is not valid utf8
+  - [x] Warn/error if the two shares are identical
 
 
 

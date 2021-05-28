@@ -8,9 +8,19 @@ from document import create_page
 from getpass import getpass
 from functools import reduce
 import operator
+from binascii import Error as BinasciiError
+import warnings
 
 
 class InvalidChecksum(Exception):
+    pass
+
+
+class InvalidSecret(Exception):
+    pass
+
+
+class InvalidStoreString(Exception):
     pass
 
 
@@ -44,9 +54,19 @@ def restore_secret(share_a, share_b):
     bytes, combined, and decoded to a string. This function
     can only work with secrets that are valid utf8.
     """
+    if share_a == share_b:
+        warnings.warn('The two secret shares are identical. This is likly a mistake.')
+
     a = storestring2bytes(share_a)
     b = storestring2bytes(share_b)
-    return xor(a, b).decode('utf8')
+    try:
+        secret = xor(a, b).decode('utf8')
+        return secret
+    except UnicodeDecodeError as e:
+        raise InvalidSecret(
+            'The secret is not valid utf-8. This program only support secrets '
+            'that are valid utf-8 strings'
+        ) from e
 
 
 def xor(a, b):
@@ -136,8 +156,13 @@ def storestring2bytes(string):
     Convert storage string to bytes. string must be using the storage
     format -- usually created by bytes2storestring(bytes)
     """
-    # TODO handle errors
-    all_bytes = b64decode(string.encode('utf8'))
+    try:
+        all_bytes = b64decode(string.encode('utf8'), validate=True)
+    except BinasciiError as e:
+        raise InvalidStoreString(
+            f'The store string is not valid base64. Entered store string: {string}'
+        ) from e
+
     b, control_byte = all_bytes[:-1], all_bytes[-1]
 
     if not reduce(operator.xor, b) == control_byte:
