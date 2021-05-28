@@ -63,6 +63,6 @@ decode: bytes -> string
 ## Examples
 
 ```console
-% ./secret.py combine txhEAu8Dm9OdZ5iKzPukpDy4vIP1NqMOuA== +3crac9h/rv0CfyquJPBhE/Q2efVxjyqFQ==
+% ./secret.py combine 6vn3jt/YF2T8CFFmyarX0bd7cM7oADKkRvI= ppaY5f+6cgyVZjVGvcKy8cQTFarI8K0A69w=
 Look behind the shed 🤭
 ```
