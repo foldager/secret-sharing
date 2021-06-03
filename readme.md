@@ -64,7 +64,34 @@ decode: bytes -> string
 
 ## Examples
 
+The first example shows how to combine two secret shares to re-construct the secret.
 ```console
 % ./secret.py combine 6vn3jt/YF2T8CFFmyarX0bd7cM7oADKkRvI= ppaY5f+6cgyVZjVGvcKy8cQTFarI8K0A69w=
 Look behind the shed 🤭
 ```
+
+Split in a secret in two and join the parts
+```console
+% ./secret.py split "short secret"
+Secret shares: qUCg1KvIkeSKf0YFPQ== 2ijPpt/o4oHpDSNxeQ==
+
+% ./secret.py combine qUCg1KvIkeSKf0YFPQ== 2ijPpt/o4oHpDSNxeQ==
+short secret
+```
+Mistyping a secret share will likely be caught by the checksum
+```console
+% ./secret.py combine QUCg1KvIkeSKf0YFPQ== 2ijPpt/o4oHpDSNxeQ==
+Store string 'QUCg1KvIkeSKf0YFPQ==' is corrupt or not entered correctly.
+```
+Or the share will not be a valid b64 string
+```console
+% ./secret.py combine UCg1KvIkeSKf0YFPQ== 2ijPpt/o4oHpDSNxeQ==
+Invalid base64-encoded string: number of data characters (17) cannot be 1 more than a multiple of 4
+Invalid/corrupted store string: UCg1KvIkeSKf0YFPQ==
+
+% ./secret.py combine U-Cg1KvIkeSKf0YFPQ== 2ijPpt/o4oHpDSNxeQ==
+Non-base64 digit found
+Invalid/corrupted store string: U-Cg1KvIkeSKf0YFPQ==
+```
+
+
