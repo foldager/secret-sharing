@@ -5,7 +5,6 @@ from secret import (
     storestring2bytes,
     bytes2storestring,
     InvalidChecksum,
-    InvalidSecret,
     InvalidStoreString,
 )
 import pytest
@@ -51,9 +50,14 @@ def test_bytes2storestring():
     assert s == bytes2storestring(b)
 
 
-def test_restore_secret_invalid_unicode():
-    with pytest.raises(InvalidSecret):
-        restore_secret('4q1P', '+Fig')
+def test_restore_secret_invalid_unicode(capsys):
+    restore_secret('4q1P', '+Fig')
+    captured = capsys.readouterr()
+    assert captured.err == (
+        "Warning: The secret is not valid utf-8.\n"
+        "python bytes representation: b'\\x1a\\xf5'\n"
+    )
+    assert captured.out == "Best effort uft-8 decoding:\n"
 
 
 def test_storestring2bytes_invalid_b64():

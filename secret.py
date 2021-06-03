@@ -10,13 +10,10 @@ from functools import reduce
 import operator
 from binascii import Error as BinasciiError
 import warnings
+import sys
 
 
 class InvalidChecksum(SystemExit):
-    pass
-
-
-class InvalidSecret(SystemExit):
     pass
 
 
@@ -60,13 +57,14 @@ def restore_secret(share_a, share_b):
     a = storestring2bytes(share_a)
     b = storestring2bytes(share_b)
     try:
-        secret = xor(a, b).decode('utf8')
-        return secret
-    except UnicodeDecodeError as e:
-        raise InvalidSecret(
-            'The secret is not valid utf-8. This program only support secrets '
-            'that are valid utf-8 strings'
-        ) from e
+        secret_bytes = xor(a, b)
+        return secret_bytes.decode('utf8')
+    except UnicodeDecodeError:
+        print('Warning: The secret is not valid utf-8.', file=sys.stderr)
+        print(f'python bytes representation: {secret_bytes}', file=sys.stderr)
+        print('Best effort uft-8 decoding:')
+
+        return secret_bytes.decode('utf8', errors='replace')
 
 
 def xor(a, b):
