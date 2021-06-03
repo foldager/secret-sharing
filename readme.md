@@ -1,5 +1,6 @@
+![Build status](https://github.com/foldager/secret-sharing/actions/workflows/qa.yml/badge.svg)
 
-# Secret sharing
+# Secret sharing 
 
 Split recovery keys and other secrets.
 
