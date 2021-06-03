@@ -12,15 +12,15 @@ from binascii import Error as BinasciiError
 import warnings
 
 
-class InvalidChecksum(Exception):
+class InvalidChecksum(SystemExit):
     pass
 
 
-class InvalidSecret(Exception):
+class InvalidSecret(SystemExit):
     pass
 
 
-class InvalidStoreString(Exception):
+class InvalidStoreString(SystemExit):
     pass
 
 
@@ -160,8 +160,9 @@ def storestring2bytes(string):
         all_bytes = b64decode(string.encode('utf8'), validate=True)
     except BinasciiError as e:
         raise InvalidStoreString(
-            f'The store string is not valid base64. Entered store string: {string}'
-        ) from e
+            str(e) +
+            f'\nInvalid/corrupted store string: {string}'
+        )
 
     b, control_byte = all_bytes[:-1], all_bytes[-1]
 
