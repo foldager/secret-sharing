@@ -95,7 +95,7 @@ Non-base64 digit found
 Invalid/corrupted store string: U-Cg1KvIkeSKf0YFPQ==
 ```
 
-In case you have gotten your hands on two secret shares that combines to bytes
+In case you have gotten your hands on two secret shares that combine to bytes
 that are not valid utf-8, you will get a warning like this:
 ```console
 % ./secret.py combine 4q1P +Fig
