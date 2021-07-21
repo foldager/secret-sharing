@@ -125,15 +125,18 @@ def splitn_command(secret, n, out_file, secret_name, **kwargs):
             records=share
         )
         for i, share in enumerate(shares, 1)]
-    rst_doc = join_pages(pages)
 
     # with open('foo.rst', 'w') as fh:
-    #     fh.write(rst_doc)
+    #     fh.write(pages[0])
 
-    RstToPdf().createPdf(
-        text=rst_doc,
-        output=out_file
-    )
+    for i, page in enumerate(pages):
+        RstToPdf(
+            breakside='any',
+            breaklevel=0
+        ).createPdf(
+            text=page,
+            output=str(i) + out_file
+        )
 
 
 def join_pages(pages):

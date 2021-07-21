@@ -16,11 +16,12 @@ Create pdfs for printing. Any two sheets of paper are and prindocuments
   - [ ] Description
   - [ ] Owner
   - [ ] Full list of confidants (Optional)
-  - [ ] Selfdocumenting. Must contain enough detail that the secret can be recovered without access to script.
+  - [x] Selfdocumenting. Must contain enough detail that the secret can be recovered without access to script.
     - [ ] High level description of algorithm
       - [ ] bytes to b64 store string
       - [ ] checksum byte
     - [ ] Hand derived example(s)
+  - [ ] Make a single pdf https://stackoverflow.com/questions/3444645/merge-pdf-files
 - [ ] Repo documentation
   - [ ] ...
 - [x] Unit tests
