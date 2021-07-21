@@ -34,6 +34,7 @@ Create pdfs for printing. Any two sheets of paper are and prindocuments
   - [x] Warn/error if the two shares are identical
 - [ ] Make pip-installable
 - [ ] Install CLI entrypoint
+- [ ] Make log(n) share pairs instead of n**2
 
 
 ## Encoding
