@@ -72,7 +72,7 @@ The first example shows how to combine two secret shares to re-construct the sec
 Look behind the shed 🤭
 ```
 
-Split in a secret in two and join the parts
+Split a secret in two and join the parts
 ```console
 % ./secret.py split "short secret"
 Secret shares: qUCg1KvIkeSKf0YFPQ== 2ijPpt/o4oHpDSNxeQ==
@@ -85,7 +85,7 @@ Mistyping a secret share will likely be caught by the checksum
 % ./secret.py combine QUCg1KvIkeSKf0YFPQ== 2ijPpt/o4oHpDSNxeQ==
 Store string 'QUCg1KvIkeSKf0YFPQ==' is corrupt or not entered correctly.
 ```
-Or the share will not be a valid b64 string
+... Or the share will not be a valid b64 string
 ```console
 % ./secret.py combine UCg1KvIkeSKf0YFPQ== 2ijPpt/o4oHpDSNxeQ==
 Invalid base64-encoded string: number of data characters (17) cannot be 1 more than a multiple of 4
